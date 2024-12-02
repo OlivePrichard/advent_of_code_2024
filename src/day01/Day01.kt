@@ -4,22 +4,23 @@ import println
 import readInput
 import kotlin.math.abs
 
-fun part1(input: List<String>): Int {
+fun getLists(input: List<String>): Pair<List<Int>, List<Int>> {
     val locations = input.map { it.split("   ") }
     val firstLocations = locations.map { it.first().toInt() }.sorted()
     val secondLocations = locations.map { it.last().toInt() }.sorted()
+    return firstLocations to secondLocations
+}
+
+fun part1(input: List<String>): Int {
+    val (firstLocations, secondLocations) = getLists(input)
     return firstLocations.zip(secondLocations).sumOf { abs(it.first - it.second) }
 }
 
 fun part2(input: List<String>): Int {
-    val locations = input.map { it.split("   ") }
-    val firstLocations = locations.map { it.first().toInt() }.sorted()
-    val secondLocations = locations.map { it.last().toInt() }.sorted()
-    var similarity = 0
-    for (firstLocation in firstLocations) {
-        similarity += firstLocation * secondLocations.count { it == firstLocation }
+    val (firstLocations, secondLocations) = getLists(input)
+    return firstLocations.sumOf {
+        it * secondLocations.count { x -> x == it }
     }
-    return similarity
 }
 
 fun main() {
