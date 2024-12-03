@@ -3,38 +3,31 @@ package day02
 import println
 import readInput
 
-fun part1(input: List<String>): Int {
-    val levels = input.map { line ->
+fun getLevels(input: List<String>): List<List<Int>> {
+    return input.map { line ->
         line.split(" ").map {
             it.toInt()
         }
     }
-    return levels.count {
-        val increasing = it.windowed(2).all { (a, b) -> a - b in 1..3 }
-        val decreasing = it.windowed(2).all { (a, b) -> b - a in 1..3 }
-        increasing || decreasing
+}
+
+fun checkLevels(levels: List<Int>): Boolean {
+    return levels.windowed(2).all { (a, b) -> b - a in 1..3 } || levels.windowed(2).all { (a, b) -> a - b in 1..3 }
+}
+
+fun part1(input: List<String>): Int {
+    return getLevels(input).count {
+        checkLevels(it)
     }
 }
 
 fun part2(input: List<String>): Int {
-    val levels = input.map { line ->
-        line.split(" ").map {
-            it.toInt()
-        }
-    }
-    return levels.count {
-        for (i in it.indices) {
+    return getLevels(input).count {
+        it.indices.any { i ->
             val dampenedLevels = it.toMutableList()
             dampenedLevels.removeAt(i)
-            val increasing = dampenedLevels.windowed(2).all { (a, b) -> a - b in 1..3 }
-            val decreasing = dampenedLevels.windowed(2).all { (a, b) -> b - a in 1..3 }
-
-            if (increasing || decreasing) {
-                return@count true
-            }
+            checkLevels(dampenedLevels)
         }
-
-        false
     }
 }
 
