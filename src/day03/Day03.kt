@@ -3,24 +3,19 @@ package day03
 import println
 import readInput
 
-fun part1(input: List<String>): Int {
-    val instruction = "mul\\((\\d+),(\\d+)\\)".toRegex()
-    return input.sumOf {
-        instruction.findAll(it).map { match ->
-            match.groupValues[1].toInt() * match.groupValues[2].toInt()
-        }.sum()
+fun execute(code: String) =
+    "mul\\((\\d+),(\\d+)\\)".toRegex().findAll(code).sumOf {
+        it.groupValues[1].toInt() * it.groupValues[2].toInt()
     }
-}
 
-fun part2(input: List<String>): Int {
-    val spliced = input
+fun part1(input: List<String>) =
+    input.joinToString("").let(::execute)
+
+fun part2(input: List<String>) =
+    input
         .joinToString("")
         .replace("don't\\(\\).*?(?:do\\(\\)|$)".toRegex(), "")
-
-    return "mul\\((\\d+),(\\d+)\\)".toRegex().findAll(spliced).map { match ->
-        match.groupValues[1].toInt() * match.groupValues[2].toInt()
-    }.sum()
-}
+        .let(::execute)
 
 fun main() {
     // Read a test input from the `src/day03/Day03_test.txt` file:

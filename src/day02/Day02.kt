@@ -3,33 +3,29 @@ package day02
 import println
 import readInput
 
-fun getLevels(input: List<String>): List<List<Int>> {
-    return input.map { line ->
+fun getLevels(input: List<String>) =
+    input.map { line ->
         line.split(" ").map {
             it.toInt()
         }
     }
-}
 
-fun checkLevels(levels: List<Int>): Boolean {
-    return levels.windowed(2).all { (a, b) -> b - a in 1..3 } || levels.windowed(2).all { (a, b) -> a - b in 1..3 }
-}
-
-fun part1(input: List<String>): Int {
-    return getLevels(input).count {
-        checkLevels(it)
+fun checkLevels(levels: List<Int>) =
+    levels.windowed(2).map { (a, b) -> a - b }.let { diffs ->
+        diffs.all { it in 1..3 } || diffs.all { -it in 1..3 }
     }
-}
 
-fun part2(input: List<String>): Int {
-    return getLevels(input).count {
+fun part1(input: List<String>) =
+    getLevels(input).count(::checkLevels)
+
+fun part2(input: List<String>) =
+    getLevels(input).count {
         it.indices.any { i ->
             val dampenedLevels = it.toMutableList()
             dampenedLevels.removeAt(i)
             checkLevels(dampenedLevels)
         }
     }
-}
 
 fun main() {
     // Read a test input from the `src/day02/Day02_test.txt` file:

@@ -5,7 +5,7 @@ import readInput
 import kotlin.math.abs
 
 fun getLists(input: List<String>): Pair<List<Int>, List<Int>> {
-    val locations = input.map { it.split("   ") }
+    val locations = input.map { it.split("\\s+".toRegex()) }
     val firstLocations = locations.map { it.first().toInt() }.sorted()
     val secondLocations = locations.map { it.last().toInt() }.sorted()
     return firstLocations to secondLocations
