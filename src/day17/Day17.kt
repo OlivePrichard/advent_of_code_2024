@@ -11,19 +11,17 @@ fun combo(operand: Long, regA: Long, regB: Long, regC: Long) = when (operand) {
     else -> throw IllegalArgumentException("Invalid operand: $operand")
 }
 
-class Wrapper(var value: Long)
-
-fun getBits(register: Long, output: List<Int>, ret: Wrapper, operation: (Long) -> Int): Boolean {
-    if (output.isEmpty()) return true.also { ret.value = register }
+fun getBits(register: Long, output: List<Int>, operation: (Long) -> Int): Long? {
+    if (output.isEmpty()) return register
     val target = output.last()
     val next = output.subList(0, output.size - 1)
     for (i in 0..7) {
         val nextRegister = (register shl 3) or i.toLong()
-        if (operation(nextRegister) == target && getBits(nextRegister, next, ret, operation)) {
-            return true
+        if (operation(nextRegister) == target) {
+            return getBits(nextRegister, next, operation) ?: continue
         }
     }
-    return false
+    return null
 }
 
 fun part1(input: List<String>): String {
@@ -71,8 +69,7 @@ fun part2(input: List<String>): Long {
         ?.map { it.toInt() }
         ?: emptyList()
     val instructions = (0 until program.size / 2 - 1).map { program[it * 2] to program[it * 2 + 1] }
-    val output = Wrapper(0)
-    if (!getBits(0, program, output) {
+    return getBits(0, program) {
             var regA = it
             var regB = 0L
             var regC = 0L
@@ -92,9 +89,7 @@ fun part2(input: List<String>): Long {
                 }
             }
             throw IllegalStateException("Didn't return properly")
-
-        }) throw IllegalStateException("No output found")
-    return output.value
+        } ?: throw IllegalStateException("No output found")
 }
 
 fun main() {
